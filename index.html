@@ -1,0 +1,1257 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard Penasihat Akademik — DIT</title>
+<style>
+/* =========================================================
+   RESET & BASE
+   ========================================================= */
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,"Segoe UI",system-ui,sans-serif;background:#eef1f7;color:#1f2328;font-size:14px;line-height:1.6}
+a{color:inherit;text-decoration:none}
+
+/* =========================================================
+   HEADER
+   ========================================================= */
+.header{
+  background:linear-gradient(135deg,#0f2d57 0%,#1a4a8a 60%,#2563a8 100%);
+  color:#fff;padding:0;
+  box-shadow:0 4px 20px rgba(0,0,0,.25);
+}
+.header-inner{
+  max-width:1400px;margin:0 auto;
+  padding:18px 28px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+}
+.header-brand{display:flex;align-items:center;gap:14px}
+.header-icon{
+  width:48px;height:48px;border-radius:12px;
+  background:rgba(255,255,255,.15);
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;flex-shrink:0;
+}
+.header-title{font-size:20px;font-weight:800;letter-spacing:-.3px}
+.header-sub{font-size:12px;opacity:.75;margin-top:2px}
+.header-meta{text-align:right;font-size:12px;opacity:.8;line-height:1.8}
+.header-meta strong{opacity:1;font-size:14px}
+
+/* =========================================================
+   LAYOUT
+   ========================================================= */
+.page{max-width:1400px;margin:0 auto;padding:22px 24px}
+
+/* =========================================================
+   TOOLBAR
+   ========================================================= */
+.toolbar{
+  background:#fff;border-radius:12px;padding:14px 18px;
+  margin-bottom:20px;
+  display:flex;gap:10px;align-items:center;flex-wrap:wrap;
+  box-shadow:0 2px 8px rgba(0,0,0,.07);
+  border:1px solid #e5e7eb;
+  position:sticky;top:0;z-index:100;
+}
+.toolbar label{font-size:12px;font-weight:700;color:#374151;white-space:nowrap}
+.toolbar input[type=text]{
+  flex:1;min-width:220px;max-width:320px;
+  padding:9px 14px 9px 36px;
+  border:1px solid #d1d5db;border-radius:8px;
+  font-size:13px;background:#f9fafb;
+  transition:border .2s,box-shadow .2s;
+  outline:none;
+}
+.toolbar input[type=text]:focus{border-color:#3b82f6;box-shadow:0 0 0 3px rgba(59,130,246,.1);background:#fff}
+.search-wrap{position:relative}
+.search-icon{position:absolute;left:11px;top:50%;transform:translateY(-50%);font-size:14px;color:#9ca3af;pointer-events:none}
+.toolbar select{
+  padding:9px 14px;border:1px solid #d1d5db;border-radius:8px;
+  font-size:13px;background:#f9fafb;cursor:pointer;outline:none;
+  transition:border .2s;
+}
+.toolbar select:focus{border-color:#3b82f6}
+.btn{
+  padding:9px 18px;border-radius:8px;font-size:13px;font-weight:600;
+  border:none;cursor:pointer;transition:all .15s;white-space:nowrap;
+  display:inline-flex;align-items:center;gap:6px;
+}
+.btn-primary{background:#1a4a8a;color:#fff}
+.btn-primary:hover{background:#0f2d57}
+.btn-outline{background:#fff;color:#374151;border:1px solid #d1d5db}
+.btn-outline:hover{background:#f3f4f6}
+.btn-sm{padding:6px 12px;font-size:12px}
+
+/* =========================================================
+   STAT CARDS
+   ========================================================= */
+.cards-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(160px,1fr));
+  gap:14px;margin-bottom:20px;
+}
+.stat-card{
+  background:#fff;border-radius:14px;padding:18px 16px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+  border:1px solid #e5e7eb;
+  position:relative;overflow:hidden;
+  transition:transform .15s,box-shadow .15s;
+}
+.stat-card:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(0,0,0,.1)}
+.stat-card::before{
+  content:"";position:absolute;top:0;left:0;right:0;height:4px;
+  border-radius:14px 14px 0 0;
+}
+.stat-card.blue::before{background:linear-gradient(90deg,#3b82f6,#60a5fa)}
+.stat-card.green::before{background:linear-gradient(90deg,#22c55e,#4ade80)}
+.stat-card.orange::before{background:linear-gradient(90deg,#f97316,#fb923c)}
+.stat-card.red::before{background:linear-gradient(90deg,#ef4444,#f87171)}
+.stat-card.purple::before{background:linear-gradient(90deg,#8b5cf6,#a78bfa)}
+.stat-card.teal::before{background:linear-gradient(90deg,#14b8a6,#2dd4bf)}
+.stat-label{font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;letter-spacing:.6px;margin-bottom:6px}
+.stat-val{font-size:30px;font-weight:900;line-height:1;margin-bottom:4px}
+.stat-sub{font-size:11px;color:#9ca3af}
+.stat-icon{position:absolute;right:14px;top:18px;font-size:28px;opacity:.12}
+
+/* =========================================================
+   ALERT BANNERS
+   ========================================================= */
+.alerts-wrap{margin-bottom:16px;display:flex;flex-direction:column;gap:8px}
+.alert{
+  padding:11px 16px;border-radius:10px;font-size:13px;
+  display:flex;align-items:flex-start;gap:10px;
+  animation:fadeIn .3s ease;
+}
+@keyframes fadeIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:none}}
+.alert-icon{flex-shrink:0;font-size:16px;margin-top:1px}
+.alert.warn{background:#fffbeb;border:1px solid #fcd34d;color:#92400e}
+.alert.danger{background:#fef2f2;border:1px solid #fca5a5;color:#991b1b}
+.alert.info{background:#eff6ff;border:1px solid #93c5fd;color:#1e40af}
+.alert.ok{background:#f0fdf4;border:1px solid #86efac;color:#14532d}
+
+/* =========================================================
+   SECTION CARDS
+   ========================================================= */
+.section{
+  background:#fff;border-radius:14px;padding:20px 22px;
+  margin-bottom:18px;
+  box-shadow:0 2px 8px rgba(0,0,0,.06);
+  border:1px solid #e5e7eb;
+}
+.section-head{
+  display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:16px;padding-bottom:12px;
+  border-bottom:2px solid #f3f4f6;
+  flex-wrap:wrap;gap:8px;
+}
+.section-title{font-size:15px;font-weight:800;color:#0f2d57;display:flex;align-items:center;gap:8px}
+.section-badge{
+  font-size:11px;padding:3px 10px;border-radius:20px;font-weight:700;
+  background:#eff6ff;color:#1d4ed8;
+}
+
+/* =========================================================
+   TABLE
+   ========================================================= */
+.tbl-wrap{overflow-x:auto;border-radius:10px;border:1px solid #e5e7eb}
+table{width:100%;border-collapse:collapse;font-size:12.5px}
+thead th{
+  background:#f8fafc;padding:11px 12px;
+  text-align:left;font-weight:700;color:#374151;
+  white-space:nowrap;border-bottom:2px solid #e5e7eb;
+  position:sticky;top:0;z-index:10;
+}
+thead th:first-child{border-radius:10px 0 0 0}
+thead th:last-child{border-radius:0 10px 0 0}
+tbody td{padding:10px 12px;border-bottom:1px solid #f3f4f6;vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover td{background:#f8fafc}
+tbody tr.at-risk td{background:#fff9f9}
+tbody tr.at-risk:hover td{background:#fef2f2}
+tbody tr.at-risk td:first-child{border-left:3px solid #ef4444}
+tbody tr.ok-row:hover td{background:#f0fdf4}
+
+/* =========================================================
+   BADGES
+   ========================================================= */
+.badge{
+  display:inline-flex;align-items:center;gap:3px;
+  padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;
+  white-space:nowrap;
+}
+.badge-lulus{background:#dcfce7;color:#15803d}
+.badge-gagal{background:#fee2e2;color:#b91c1c}
+.badge-ulang{background:#fff7ed;color:#c2410c;border:1px solid #fed7aa}
+.badge-pending{background:#fef9c3;color:#854d0e}
+.badge-li{background:#ede9fe;color:#6d28d9}
+.badge-wajib{background:#dbeafe;color:#1d4ed8}
+.badge-core{background:#f0fdf4;color:#166534}
+.badge-disiplin{background:#fdf4ff;color:#7e22ce}
+.badge-elektif{background:#fff7ed;color:#9a3412}
+.badge-projek{background:#f0f9ff;color:#0369a1}
+.badge-tamat{background:#e0f2fe;color:#0369a1}
+.badge-extra{background:#fefce8;color:#713f12}
+.badge-tiada{background:#f1f5f9;color:#64748b}
+
+/* =========================================================
+   CGPA BAR
+   ========================================================= */
+.cgpa-wrap{display:flex;align-items:center;gap:8px}
+.cgpa-num{font-weight:800;font-size:14px;min-width:38px}
+.cgpa-bar-bg{flex:1;height:7px;background:#e5e7eb;border-radius:4px;overflow:hidden;min-width:60px}
+.cgpa-bar-fill{height:100%;border-radius:4px;transition:width .5s ease}
+
+/* =========================================================
+   PROGRESS DOTS
+   ========================================================= */
+.sem-track{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.sem-dot{
+  padding:4px 10px;border-radius:12px;font-size:11px;font-weight:700;
+  border:2px solid transparent;white-space:nowrap;
+}
+.sem-dot.done{background:#dcfce7;color:#15803d;border-color:#86efac}
+.sem-dot.current{background:#dbeafe;color:#1d4ed8;border-color:#93c5fd;animation:pulse 2s infinite}
+.sem-dot.upcoming{background:#f3f4f6;color:#9ca3af}
+.sem-dot.li-dot{background:#ede9fe;color:#6d28d9;border-color:#c4b5fd}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
+
+/* =========================================================
+   DETAIL VIEW
+   ========================================================= */
+.back-btn{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 16px;border-radius:8px;
+  background:#fff;border:1px solid #d1d5db;
+  font-size:13px;font-weight:600;cursor:pointer;
+  margin-bottom:16px;transition:all .15s;color:#374151;
+}
+.back-btn:hover{background:#f3f4f6;border-color:#9ca3af}
+
+.profile-hero{
+  background:linear-gradient(135deg,#0f2d57,#1a4a8a);
+  border-radius:14px;padding:24px 28px;color:#fff;
+  margin-bottom:18px;
+  box-shadow:0 4px 20px rgba(15,45,87,.3);
+}
+.profile-hero-top{display:flex;align-items:center;gap:16px;margin-bottom:20px;flex-wrap:wrap}
+.avatar{
+  width:56px;height:56px;border-radius:14px;
+  background:rgba(255,255,255,.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:22px;flex-shrink:0;font-weight:800;color:#fff;
+}
+.profile-name{font-size:18px;font-weight:800;line-height:1.3}
+.profile-id{font-size:12px;opacity:.75;margin-top:2px}
+.profile-stats{display:flex;gap:20px;flex-wrap:wrap}
+.pstat{text-align:center}
+.pstat-val{font-size:28px;font-weight:900;line-height:1}
+.pstat-lbl{font-size:11px;opacity:.7;margin-top:2px}
+
+.cgpa-blocks{display:flex;gap:10px;flex-wrap:wrap}
+.cgpa-block{
+  background:#fff;border:1px solid #e5e7eb;border-radius:12px;
+  padding:12px 16px;text-align:center;min-width:85px;
+  box-shadow:0 1px 4px rgba(0,0,0,.05);
+}
+.cgpa-block .cb-sem{font-size:11px;color:#6b7280;margin-bottom:4px;font-weight:600}
+.cgpa-block .cb-val{font-size:24px;font-weight:900;line-height:1}
+.cgpa-block.gpa-high .cb-val{color:#15803d}
+.cgpa-block.gpa-mid .cb-val{color:#1d4ed8}
+.cgpa-block.gpa-low .cb-val{color:#d97706}
+.cgpa-block.gpa-fail .cb-val{color:#b91c1c}
+.cgpa-block .cb-bar{height:5px;border-radius:3px;margin-top:6px;background:#e5e7eb;overflow:hidden}
+.cgpa-block .cb-bar-fill{height:100%;border-radius:3px}
+
+/* =========================================================
+   SUBJECT LISTS
+   ========================================================= */
+.subj-list{list-style:none;display:flex;flex-direction:column;gap:7px}
+.subj-item{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 14px;border-radius:10px;
+  border:1px solid #e5e7eb;background:#fafbfc;
+  transition:background .15s;
+}
+.subj-item:hover{background:#f3f4f6}
+.subj-item.ulang-item{background:#fff7ed;border-color:#fdba74}
+.subj-item.ulang-item:hover{background:#ffedd5}
+.subj-kod{font-weight:800;color:#0f2d57;min-width:88px;font-size:12px}
+.subj-nama{flex:1;color:#374151;font-size:13px}
+.subj-kredit{color:#6b7280;font-size:12px;white-space:nowrap;font-weight:600}
+.subj-total{
+  margin-top:12px;padding:10px 14px;border-radius:8px;
+  background:#eff6ff;border:1px solid #bfdbfe;
+  font-size:13px;color:#1e40af;font-weight:700;
+  display:flex;justify-content:space-between;
+}
+
+/* =========================================================
+   LULUS TABLE
+   ========================================================= */
+.lulus-table td:nth-child(4){text-align:center}
+.lulus-table th:nth-child(4){text-align:center}
+
+/* =========================================================
+   GRID
+   ========================================================= */
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+@media(max-width:900px){
+  .grid2,.grid3{grid-template-columns:1fr}
+  .cards-grid{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:500px){
+  .cards-grid{grid-template-columns:1fr}
+}
+
+/* =========================================================
+   KREDIT PROGRESS
+   ========================================================= */
+.kredit-progress-wrap{margin-top:12px}
+.kredit-prog-bar{
+  height:14px;background:#e5e7eb;border-radius:7px;overflow:hidden;
+  margin-top:6px;
+}
+.kredit-prog-fill{height:100%;border-radius:7px;background:linear-gradient(90deg,#3b82f6,#60a5fa);transition:width .6s ease}
+
+/* =========================================================
+   EMPTY STATE
+   ========================================================= */
+.empty{padding:32px;text-align:center;color:#9ca3af;font-size:13px}
+.empty-icon{font-size:36px;margin-bottom:8px}
+
+/* =========================================================
+   PRINT
+   ========================================================= */
+@media print{
+  .toolbar,.back-btn,.btn{display:none!important}
+  .header{background:#0f2d57!important;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .stat-card::before{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+}
+
+.hidden{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-inner">
+    <div class="header-brand">
+      <div class="header-icon">🎓</div>
+      <div>
+        <div class="header-title">Dashboard Penasihat Akademik</div>
+        <div class="header-sub">Diploma Teknologi Maklumat (DIT) &nbsp;·&nbsp; Kohort 2025 &nbsp;·&nbsp; Maks. 9 Semester (termasuk LI)</div>
+      </div>
+    </div>
+    <div class="header-meta">
+      <div id="clock" style="font-size:13px;font-weight:700"></div>
+      <div>Jumlah Kredit Program: <strong>97 kredit</strong></div>
+    </div>
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- TOOLBAR -->
+  <div class="toolbar">
+    <label>Pelajar:</label>
+    <div class="search-wrap">
+      <span class="search-icon">🔍</span>
+      <input type="text" id="searchInput" placeholder="Cari nama atau no. pendaftaran..." oninput="filterStudents()">
+    </div>
+    <select id="semFilter" onchange="renderMain()">
+      <option value="3">Paparan: Selepas Semester 3</option>
+      <option value="2">Paparan: Selepas Semester 2</option>
+      <option value="1">Paparan: Selepas Semester 1</option>
+    </select>
+    <button class="btn btn-primary" onclick="renderMain()">🔄 Kemaskini</button>
+    <button class="btn btn-outline" onclick="window.print()">🖨️ Cetak</button>
+    <span id="countLabel" style="font-size:12px;color:#6b7280;margin-left:4px"></span>
+  </div>
+
+  <!-- LIST VIEW -->
+  <div id="listView">
+    <div class="cards-grid" id="summaryCards"></div>
+    <div class="alerts-wrap" id="alertsBox"></div>
+
+    <div class="section">
+      <div class="section-head">
+        <div class="section-title">📋 Senarai Pelajar — Status Akademik</div>
+        <span class="section-badge" id="tableCount"></span>
+      </div>
+      <div class="tbl-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Bil</th>
+              <th>No. Pendaftaran</th>
+              <th>Nama Pelajar</th>
+              <th>CGPA Terkini</th>
+              <th>Kredit Lulus</th>
+              <th>Subjek Gagal/Ulang Sem 3</th>
+              <th>Status LI</th>
+              <th>Jangka Tamat</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="mainTbody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- DETAIL VIEW -->
+  <div id="detailView" class="hidden">
+    <button class="back-btn" onclick="showList()">← Kembali ke Senarai Pelajar</button>
+    <div id="detailContent"></div>
+  </div>
+
+</div>
+
+<script>
+/* =============================================================
+   KURIKULUM — berdasarkan gambar 5
+   ============================================================= */
+const KURIKULUM = {
+  sem1:{
+    label:"Semester 1",
+    subjects:[
+      {kod:"MPU24031",nama:"Sukan 1",                           jenis:"Wajib",   kredit:1, prasyarat:[]},
+      {kod:"MPU24041",nama:"Kelab/Persatuan 1",                 jenis:"Wajib",   kredit:1, prasyarat:[]},
+      {kod:"MPU24XX1",nama:"Unit Beruniform 1",                 jenis:"Wajib",   kredit:0, prasyarat:[]},
+      {kod:"MPU22153",nama:"English for Digital Technology",    jenis:"Wajib",   kredit:3, prasyarat:[]},
+      {kod:"DBM10143",nama:"Calculus and Algebra",              jenis:"Core",    kredit:3, prasyarat:[]},
+      {kod:"DFC10263",nama:"Computer Architecture",             jenis:"Core",    kredit:3, prasyarat:[]},
+      {kod:"DFC10273",nama:"Operating Systems",                 jenis:"Core",    kredit:3, prasyarat:[]},
+      {kod:"DFC10353",nama:"Programming Fundamentals",          jenis:"Core",    kredit:3, prasyarat:[]},
+    ]
+  },
+  sem2:{
+    label:"Semester 2",
+    subjects:[
+      {kod:"MPU23162",nama:"Pengajian Islam",                   jenis:"Wajib",   kredit:2, prasyarat:[]},
+      {kod:"MPU23272",nama:"Pendidikan Moral",                  jenis:"Wajib",   kredit:2, prasyarat:[]},
+      {kod:"MPU24051",nama:"Sukan 2",                           jenis:"Wajib",   kredit:1, prasyarat:["MPU24031"]},
+      {kod:"MPU24081",nama:"Kelab/Persatuan 2",                 jenis:"Wajib",   kredit:1, prasyarat:["MPU24041"]},
+      {kod:"MPU24XX2",nama:"Unit Beruniform 2",                 jenis:"Wajib",   kredit:0, prasyarat:[]},
+      {kod:"DBM20163",nama:"Discrete Mathematics",              jenis:"Core",    kredit:3, prasyarat:[]},
+      {kod:"DFC20283",nama:"Database Fundamentals",             jenis:"Core",    kredit:3, prasyarat:[]},
+      {kod:"DFC20293",nama:"Network and Data Communication",    jenis:"Core",    kredit:3, prasyarat:[]},
+      {kod:"DFC20313",nama:"Cybersecurity Fundamentals",        jenis:"Core",    kredit:3, prasyarat:[]},
+      {kod:"DFK20013",nama:"Web Design Technology",             jenis:"Disiplin",kredit:3, prasyarat:[]},
+    ]
+  },
+  sem3:{
+    label:"Semester 3",
+    subjects:[
+      {kod:"DBM30263",nama:"Statistics and Probability",        jenis:"Core",    kredit:3, prasyarat:[]},
+      {kod:"DFC30333",nama:"Ethics in Computing",               jenis:"Core",    kredit:3, prasyarat:[]},
+      {kod:"DFK30028",nama:"User Experience Fundamentals",      jenis:"Disiplin",kredit:3, prasyarat:[]},
+      {kod:"DFK30053",nama:"Cyberpreneurship",                  jenis:"Disiplin",kredit:3, prasyarat:[]},
+      {kod:"DFK30063",nama:"Object Oriented Programming",       jenis:"Disiplin",kredit:3, prasyarat:[]},
+      {kod:"DFP30522",nama:"Digital Multimedia",                jenis:"Elektif", kredit:3, prasyarat:[]},
+    ]
+  },
+  sem4:{
+    label:"Semester 4",
+    subjects:[
+      {kod:"DUE40192",nama:"Professional English For Employment",jenis:"Wajib",  kredit:2, prasyarat:[]},
+      {kod:"DFK40063",nama:"Server Administration",             jenis:"Core",    kredit:3, prasyarat:[]},
+      {kod:"DFC40343",nama:"System Analysis and Design Fundamentals",jenis:"Core",kredit:3,prasyarat:[]},
+      {kod:"DFK40073",nama:"Cloud Computing",                   jenis:"Disiplin",kredit:3, prasyarat:[]},
+      {kod:"DFP40453",nama:"Mobile Application Development",    jenis:"Elektif", kredit:3, prasyarat:[]},
+      {kod:"DFP40532",nama:"Business Intelligence",             jenis:"Elektif", kredit:3, prasyarat:["DFC20283"]},
+      {kod:"DFP40443",nama:"Full Stack Web Development",        jenis:"Elektif", kredit:4, prasyarat:["DFC20283","DFK20013"]},
+    ]
+  },
+  sem5:{
+    label:"Semester 5",
+    subjects:[
+      {kod:"MPU21082",nama:"Perlembagaan dan Masyarakat Berintegriti",jenis:"Wajib",kredit:2,prasyarat:[]},
+      {kod:"MPU22163",nama:"Responsible AI and Ethics",         jenis:"Wajib",   kredit:2, prasyarat:[]},
+      {kod:"DFK50083",nama:"Python Programming",                jenis:"Disiplin",kredit:3, prasyarat:[]},
+      {kod:"DFK50093",nama:"Computer Network Security",         jenis:"Disiplin",kredit:3, prasyarat:[]},
+      {kod:"DFP50463",nama:"Java-Based Application Development",jenis:"Elektif", kredit:3, prasyarat:["DBM20163","DFK20013"]},
+      {kod:"PROJECT", nama:"Project",                           jenis:"Projek",  kredit:4, prasyarat:[]},
+    ]
+  },
+  sem6:{
+    label:"Semester 6 — Latihan Industri",
+    subjects:[
+      {kod:"DUT60016",nama:"Latihan Industri",                  jenis:"LI",      kredit:9, prasyarat:[]},
+    ]
+  }
+};
+
+const TOTAL_KREDIT = 97;
+const KREDIT_MIN_LI = 70; // selepas sem 4 selesai
+
+// Bina lookup peta kod → subjek
+const SUBJ_MAP = {};
+Object.values(KURIKULUM).forEach(s => s.subjects.forEach(sub => { SUBJ_MAP[sub.kod] = sub; }));
+
+/* =============================================================
+   DATA PELAJAR
+   
+   Struktur:
+   sem1 / sem2: { hpnm, lulus:["KOD",...], gagal:["KOD",...] }
+   sem3: { lulus:["KOD",...], gagal:["KOD",...], ulang:["KOD",...] }
+     - lulus: subjek sem3/4 yang lulus di sem3 ini
+     - ulang: subjek dari sem sebelum yang diulang & lulus di sem3
+     - gagal: subjek yang diambil tapi gagal
+   
+   NOTA PENTING:
+   - Sem 3 dalam gambar 3&4, header adalah:
+     DFK40063 | DFC40343 | DFK40073 | DFK30033 | DFP40532 | DFP40443 | DFP40453 | DUE40192 | DFK30023 | DFK20013 | DBM30263 | DFP30522
+   - DFK20013 (Web Design, Sem 2) ada dalam senarai Sem 3 → pelajar yang ada ✓ = MENGULANG
+   - DFK30023 = subjek yang tidak ada dalam kurikulum standard (kemungkinan kursus tambahan/elektif)
+   - DBM30263 = Statistics (Sem 3 normal)
+   - DFP30522 = Digital Multimedia (Sem 3 elektif)
+   ============================================================= */
+
+// Header Sem 3 dari gambar (urutan lajur gambar 3&4):
+// Col1=DFK40063, Col2=DFC40343, Col3=DFK40073, Col4=DFK30033,
+// Col5=DFP40532, Col6=DFP40443, Col7=DFP40453, Col8=DUE40192,
+// Col9=DFK30023, Col10=DFK20013, Col11=DBM30263, Col12=DFP30522
+
+const STUDENTS = [
+  // ---- Bil 1 ----
+  {id:"19DIT25F1004", nama:"NURUL NAJIHAH BINTI MUHAMAD SAUKI",
+   sem1:{hpnm:3.75, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031","MPU24041"], gagal:[]},
+   sem2:{hpnm:3.71, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   // Gambar3 row1: ✓DFK40063,✓DFC40343,✓DFK40073,✗DFK30033,✓DFP40532,✓DFP40443,✓DFP40453,✓DUE40192,✗DFK30023,✗DFK20013,✗DBM30263,✗DFP30522
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 2 ----
+  {id:"19DIT25F1009", nama:"NUR AISYAH BINTI MOHD ARFAT",
+   sem1:{hpnm:3.88, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:3.80, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   // Gambar3 row2: ✓DFK40063,✓DFC40343,✓DFK40073,✗DFK30033,✓DFP40532,✓DFP40443,✗DFP40453,✓DUE40192,✓DFK30023,✗DFK20013,✗DBM30263,✗DFP30522
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DUE40192","DFK30023"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 3 ----
+  {id:"19DIT25F1014", nama:"ZAINURUL NARISHA EDLIN BINTI ZAIDI",
+   sem1:{hpnm:3.75, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:3.67, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   // row3: ✓DFK40063,✓DFC40343,✓DFK40073,✗DFK30033,✓DFP40532,✓DFP40443,✓DFP40453,✓DUE40192,✗DFK30023,✗DFK20013,✗DBM30263,✗DFP30522
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 4 ----
+  {id:"19DIT25F1019", nama:"WAN MUHAMMAD AIDIL BIN WAN ZAHARI",
+   sem1:{hpnm:3.69, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:3.51, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   // row4: ✓DFK40063,✓DFC40343,✓DFK40073,✗DFK30033,✓DFP40532,✓DFP40443,✓DFP40453,✓DUE40192,✗DFK30023,✗DFK20013,✗DBM30263,✗DFP30522
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 5 ----
+  {id:"19DIT25F1024", nama:"SYARIFAH RAUDHAH BINTI SYED EMRAN FAISAL",
+   sem1:{hpnm:3.44, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:3.41, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   // row5: ✓DFK40063,✓DFC40343,✓DFK40073,✗DFK30033,✓DFP40532,✓DFP40443,✓DFP40453,✓DUE40192,✗DFK30023,✗DFK20013,✗DBM30263,✗DFP30522
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 6 ----
+  {id:"19DIT25F1029", nama:"AIMAN FITRI BIN AZMI",
+   sem1:{hpnm:3.57, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24111"], gagal:[]},
+   sem2:{hpnm:3.57, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   // row6: ✓DFK40063,✓DFC40343,✓DFK40073,✗DFK30033,✓DFP40532,✓DFP40443,✓DFP40453,✓DUE40192,✗DFK30023,✗DFK20013,✗DBM30263,✗DFP30522
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 7 ----
+  {id:"19DIT25F1034", nama:"MUHAMAD RAZIN ASYRAFF BIN MUHAMAD RAOF",
+   sem1:{hpnm:4.00, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:4.00, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   // row7: ✓DFK40063,✓DFC40343,✓DFK40073,✗DFK30033,✓DFP40532,✓DFP40443,✓DFP40453,✓DUE40192,✗DFK30023,✗DFK20013,✗DBM30263,✗DFP30522
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 8 ----
+  {id:"19DIT25F1039", nama:"YOOGINESH A/L SELVARAJAH",
+   sem1:{hpnm:3.63, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:3.56, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23272","MPU24051"], gagal:[]},
+   // row8: ✓DFK40063,✓DFC40343,✓DFK40073,✗DFK30033,✓DFP40532,✓DFP40443,✓DFP40453,✓DUE40192,✗DFK30023,✗DFK20013,✗DBM30263,✗DFP30522
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 9 ----
+  {id:"19DIT25F1044", nama:"NURAIN QAMARINA BINTI MOHD YUSRI",
+   sem1:{hpnm:3.75, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:3.70, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   // row9: ✓DFK40063,✓DFC40343,✓DFK40073,✗DFK30033,✓DFP40532,✓DFP40443,✓DFP40453,✓DUE40192,✗DFK30023,✗DFK20013,✗DBM30263,✗DFP30522
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 10 ----
+  {id:"19DIT25F1049", nama:"NUR AISYYA FATIHAH BINTI ABDULLAH",
+   sem1:{hpnm:3.75, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:3.72, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   // row10: ✓DFK40063,✓DFC40343,✓DFK40073,✗DFK30033,✓DFP40532,✓DFP40443,✓DFP40453,✓DUE40192,✗DFK30023,✗DFK20013,✗DBM30263,✗DFP30522
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 11 ----
+  {id:"19DIT25F1054", nama:"SUBANU A/P SELVA KUMARAN",
+   sem1:{hpnm:3.87, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:3.78, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23272","MPU24051"], gagal:[]},
+   // row11: ✓DFK40063,✓DFC40343,✓DFK40073,✗DFK30033,✓DFP40532,✓DFP40443,✓DFP40453,✓DUE40192,✗DFK30023,✗DFK20013,✗DBM30263,✗DFP30522
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 12 ----
+  // Iman Danish: Sem 2 ada ✓ DBM30263 (Statistics) bermaksud dia ambil awal
+  // Sem 3 row12: ✓DFK40063,✓DFC40343,✓DFK40073,✗DFK30033,✓DFP40532,✓DFP40443,✓DFP40453,✓DUE40192,✗DFK30023,✗DFK20013,✓DBM30263,✗DFP30522
+  {id:"19DIT25F1059", nama:"IMAN DANISH BIN MOHD MUSKHAIRIL AMIN",
+   sem1:{hpnm:3.31, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:3.26, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192","DBM30263"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 13 ----
+  // Muhammad Hariz Ikhwan: Sem3 ada DBM30263
+  // row13: ✓DFK40063,✓DFC40343,✓DFK40073,✗DFK30033,✓DFP40532,✓DFP40443,✓DFP40453,✓DUE40192,✗DFK30023,✗DFK20013,✓DBM30263,✗DFP30522
+  {id:"19DIT25F1064", nama:"MUHAMMAD HARIZ IKHWAN BIN NOOR AZAHAN",
+   sem1:{hpnm:3.44, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:3.57, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192","DBM30263"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 14 ----
+  {id:"19DIT25F1069", nama:"NORSYAMIZA ALYA BINTI MOHD AMIRUDDIN",
+   sem1:{hpnm:3.60, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:3.50, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   // row14: ✓DFK40063,✓DFC40343,✓DFK40073,✗DFK30033,✓DFP40532,✓DFP40443,✓DFP40453,✓DUE40192,✗DFK30023,✗DFK20013,✗DBM30263,✗DFP30522
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 15 ----
+  // Nur Raudah: Sem3 ada MPU24031 (Sukan 1 diambil balik/tiada dulu?) — gambar4 col9=DFK30023 ✓
+  // row15: ✓DFK40063,✓DFC40343,✓DFK40073,✗DFK30033,✓DFP40532,✓DFP40443,✓DFP40453,✓DUE40192,✓DFK30023,✗DFK20013,✗DBM30263,✗DFP30522
+  {id:"19DIT25F1074", nama:"NUR RAUDAH SYAZWANI BINTI RIZWAN",
+   sem1:{hpnm:4.00, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:3.34, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192","DFK30023"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 16 ----
+  {id:"19DIT25F1079", nama:"NUR ARIYANA BINTI JASHNI",
+   sem1:{hpnm:3.50, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24191"], gagal:[]},
+   sem2:{hpnm:3.47, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   // row16: ✓DFK40063,✓DFC40343,✓DFK40073,✗DFK30033,✓DFP40532,✓DFP40443,✓DFP40453,✓DUE40192,✗DFK30023,✗DFK20013,✗DBM30263,✗DFP30522
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 17 ----
+  {id:"19DIT25F1084", nama:"NUR HUWAINA ALIYA BINTI ABDUL RAHIM",
+   sem1:{hpnm:3.88, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:3.82, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   // row17: ✓DFK40063,✓DFC40343,✓DFK40073,✗DFK30033,✓DFP40532,✓DFP40443,✓DFP40453,✓DUE40192,✗DFK30023,✗DFK20013,✗DBM30263,✗DFP30522
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 18 ----
+  {id:"19DIT25F1089", nama:"MUHAMMAD SYAHIR DARMISY BIN AZNAN",
+   sem1:{hpnm:3.34, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:3.33, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   // row18: ✓DFK40063,✓DFC40343,✓DFK40073,✗DFK30033,✓DFP40532,✓DFP40443,✓DFP40453,✓DUE40192,✗DFK30023,✗DFK20013,✗DBM30263,✗DFP30522
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 19 ----
+  // MUHAMMAD SHAH ZAFRI: Sem2 DFC20293=C1, DFK20013=C1 (lulus tapi gred rendah)
+  // Pelajar TIDAK mengulang DFK20013 di Sem3 (gambar3 row17 col10=✗ DFK20013)
+  // Sem3 row17: ✓DFK40063,✓DFC40343,✓DFK40073,✓DFK30033,✓DFP40532,✗DFP40443,✗DFP40453,✗DUE40192,✗DFK30023,✗DFK20013,✗DBM30263,✓DFP30522
+  // → Shah ambil DFK30033 dan DFP30522 di Sem3, tapi tidak ambil Full Stack (DFP40443) dan Mobile (DFP40453)
+  // → DUE40192 tidak diambil di Sem3 (akan ambil Sem4)
+  {id:"19DIT25F1094", nama:"MUHAMMAD SHAH ZAFRI BIN MOHD SHAHRUL",
+   sem1:{hpnm:3.13, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:2.80, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[], catatan:"DFC20293 dan DFK20013 gred C1"},
+   // Shah: ambil DFK40063,DFC40343,DFK40073,DFK30033,DFP40532 — tidak ambil DFP40443,DFP40453,DUE40192 — ambil DFP30522
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFK30033","DFP40532","DFP30522"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 20 ----
+  // ABDUL KARIM ZAIDAN: row19 gambar3 dan gambar4
+  // row19 gambar3: ✓DFK40063,✓DFC40343,✓DFK40073,✗DFK30033,✓DFP40532,✓DFP40443,✓DFP40453,✓DUE40192
+  // row19 gambar4: ✓DFK30023,✗DFK20013,✗DBM30263,✗DFP30522
+  {id:"19DIT25F1099", nama:"ABDUL KARIM ZAIDAN BIN MUNIR",
+   sem1:{hpnm:3.63, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:3.59, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192","DFK30023"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 21 (row19 gambar3 adalah bil 19 Shah, row21 adalah Naresh) ----
+  // Naresh Kumar: row21 gambar3: ✓DFK40063,✓DFC40343,✓DFK40073,✗DFK30033,✓DFP40532,✓DFP40443,✓DFP40453,✓DUE40192
+  // row21 gambar4: ✗DFK30023,✗DFK20013,✗DBM30263,✗DFP30522
+  {id:"19DIT25F1104", nama:"NARESH KUMAR A/L KRISHNA MOORTHY",
+   sem1:{hpnm:3.89, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:3.74, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23272","MPU24051"], gagal:[]},
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 22 ----
+  // NURAIN NAZIRA (F1109):
+  // Sem2: DFC20313 = C1 (lulus, gred C1) → DFC20313 LULUS (tidak perlu ulang)
+  // Gambar3 row22: ✓DFK40063,✓DFC40343,✓DFK40073,✓DFK30033,✓DFP40532,✗DFP40443,✗DFP40453,✗DUE40192
+  // Gambar4 row20 (nurain nazira): ✓DFK30023,✓DFK20013,✓DBM30263,✓DFP30522
+  // → DFK20013 ada ✓ = dia MENGULANG Web Design (gred C1 sebelum ni)
+  // → Tidak ambil: DFP40443(Full Stack), DFP40453(Mobile), DUE40192
+  // → DUE40192 akan ambil Sem4
+  {id:"19DIT25F1109", nama:"NURAIN NAZIRA BINTI RIDUWAN SHAH",
+   sem1:{hpnm:3.56, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:3.38, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[], catatan:"DFC20313 gred C1"},
+   // Mengulang DFK20013, ambil DFK40063,DFC40343,DFK40073,DFK30033,DFP40532,DFK30023,DBM30263,DFP30522
+   // TIDAK ambil: DFP40443,DFP40453,DUE40192
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFK30033","DFP40532","DFK30023","DBM30263","DFP30522"], ulang:["DFK20013"], gagal:[]}
+  },
+  // ---- Bil 23 ----
+  // LUQMANULHAKIM: row23 gambar3: ✓DFK40063,✓DFC40343,✓DFK40073,✗DFK30033,✓DFP40532,✓DFP40443,✓DFP40453,✓DUE40192
+  // row21 gambar4: ✗DFK30023,✗DFK20013,✗DBM30263,✗DFP30522
+  {id:"19DIT25F1114", nama:"LUQMANULHAKIM BIN RAHIM",
+   sem1:{hpnm:3.34, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:3.31, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 24 ----
+  // THIWON RAJ: Sem3 ada DFK30023
+  // row22 gambar4: ✓DFK30023,✗DFK20013,✗DBM30263,✗DFP30522 (berdasarkan bil 22 = Thiwon row24 dalam gambar4)
+  // row24 gambar3: ✓DFK40063,✓DFC40343,✓DFK40073,✗DFK30033,✓DFP40532,✓DFP40443,✓DFP40453,✓DUE40192
+  {id:"19DIT25F1119", nama:"THIWON RAJ A/L A.MOHAN RAJ",
+   sem1:{hpnm:3.48, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:3.34, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192","DFK30023"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 25 ----
+  {id:"19DIT25F1124", nama:"AINI SYAMIMI BINTI NAZARUDIN",
+   sem1:{hpnm:3.42, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:3.47, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 26 ----
+  {id:"19DIT25F1129", nama:"NUR DANIA BATRISYA BINTI MOHD KAMAL",
+   sem1:{hpnm:3.34, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:3.79, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 27 ---- BELUM DAFTAR/BERHENTI
+  {id:"19DIT25F1134", nama:"MUHAMMAD HARITH HAIKAL BIN MOHD ZAMBERI",
+   belumDaftar:true,
+   sem1:{hpnm:null, lulus:[], gagal:[]},
+   sem2:{hpnm:null, lulus:[], gagal:[]},
+   sem3:{lulus:[], ulang:[], gagal:[]}
+  },
+  // ---- Bil 28 ----
+  {id:"19DIT25F1139", nama:"HUGENDRAAN A/L PALACHANTAR",
+   sem1:{hpnm:4.00, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:4.00, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23272","MPU24051"], gagal:[]},
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 29 ----
+  {id:"19DIT25F1144", nama:"MUHAMMAD ZARIFF AKMAL BIN ZAM ZUHRI",
+   sem1:{hpnm:3.54, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:3.88, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 30 ----
+  {id:"19DIT25F1149", nama:"MUHAMMAD HAIRIE IDHAM BIN NAZLEY",
+   sem1:{hpnm:3.75, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:3.65, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   // Gambar4 row26: ✓DFK30023 ada DFK30023
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192","DFK30023"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 31 ----
+  {id:"19DIT25F1154", nama:"MUHAMMAD AFIQ FAKHRULLAH BIN MOHD FARHAIZUDIN",
+   sem1:{hpnm:3.58, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:3.45, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 32 ----
+  {id:"19DIT25F1159", nama:"AHMAD AMIRULHAIKAL BIN YUSRI AMIR",
+   sem1:{hpnm:3.65, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:3.76, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 33 ----
+  // Muhammad Adam Haris: Sem3 ada DFK30023 (gambar4 row29 ✓)
+  // row29 gambar4: ✓DFK30023,✗DFK20013,✗DBM30263,✓DBM30263? semak — gambar4 row29 col11 ✓
+  // row33 gambar3: ✓DFK40063,✓DFC40343,✓DFK40073,✗DFK30033,✓DFP40532,✗DFP40443,✗DFP40453,✓DUE40192
+  {id:"19DIT25F1164", nama:"MUHAMMAD ADAM HARIS BIN MOHD AZHA",
+   sem1:{hpnm:3.54, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:3.64, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   // Tidak ambil DFP40443 (Full Stack) dan DFP40453 (Mobile)
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DUE40192","DFK30023","DBM30263"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 34 (Fatimah — gambar4 row30) ----
+  {id:"19DIT25F1165", nama:"FATIMAH AN-ISADIRIAH BINTI ASAR",
+   sem1:{hpnm:null, lulus:[], gagal:[]},
+   sem2:{hpnm:null, lulus:[], gagal:[]},
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192"], ulang:[], gagal:[]}
+  },
+  // ---- Bil 35 ----
+  {id:"19DIT25F1173", nama:"AHMAD ISKANDAR BIN ROZALI",
+   sem1:{hpnm:4.00, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:4.00, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192"], ulang:[], gagal:[]}
+  },
+  // ---- Bil tambahan ----
+  {id:"19DIT25F1175", nama:"TUAN NURAINSYA BINTI TUAN AZMAN",
+   sem1:{hpnm:null, lulus:[], gagal:[]},
+   sem2:{hpnm:null, lulus:[], gagal:[]},
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192"], ulang:[], gagal:[]}
+  },
+  // MUHAMMAD RIJAL MUBIN: Sem3 ada DFP30522 (Digital Multimedia)
+  // row33 gambar4: ✗DFK30023,✗DFK20013,✗DBM30263,✓DFP30522
+  // row33 gambar3 (anggaran): ✓DFK40063,✓DFC40343,✓DFK40073,✗DFK30033,✓DFP40532,✗DFP40443,✗DUE40192
+  {id:"19DIT25F1177", nama:"MUHAMMAD RIJAL MUBIN BIN MD SHAHNON",
+   sem1:{hpnm:null, lulus:[], gagal:[]},
+   sem2:{hpnm:null, lulus:[], gagal:[]},
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DUE40192","DFP30522"], ulang:[], gagal:[]}
+  },
+  // QISTHINA ASHEQIN: Sem3 ada DFK30033
+  // row34 gambar3: ✓DFK40063,✓DFC40343,✓DFK40073,✓DFK30033,✓DFP40532,✓DFP40443,✗DFP40453,✓DUE40192
+  {id:"19DIT25F1180", nama:"QISTHINA ASHEQIN BINTI ANUAR",
+   sem1:{hpnm:null, lulus:[], gagal:[]},
+   sem2:{hpnm:null, lulus:[], gagal:[]},
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFK30033","DFP40532","DFP40443","DUE40192"], ulang:[], gagal:[]}
+  },
+  // MUHAMMAD AZIZI BIN AJIS TANJUNG: Sem3 ada DFP30522
+  {id:"19DIT25F1200", nama:"MUHAMMAD AZIZI BIN AJIS TANJUNG",
+   sem1:{hpnm:3.34, lulus:["DBM10143","DFC10263","DFC10273","DFC10353","MPU22153","MPU24031"], gagal:[]},
+   sem2:{hpnm:4.50, lulus:["DBM20163","DFC20283","DFC20293","DFC20313","DFK20013","MPU23162","MPU24051"], gagal:[]},
+   sem3:{lulus:["DFK40063","DFC40343","DFK40073","DFP40532","DFP40443","DFP40453","DUE40192","DFP30522"], ulang:[], gagal:[]}
+  },
+];
+
+/* =============================================================
+   HELPER FUNCTIONS
+   ============================================================= */
+function getSubjekLulus(s) {
+  const all = [
+    ...(s.sem1.lulus||[]),
+    ...(s.sem2.lulus||[]),
+    ...(s.sem3.lulus||[]),
+    ...(s.sem3.ulang||[]),
+  ];
+  return [...new Set(all)];
+}
+
+function getSubjekGagal(s) { return s.sem3.gagal||[]; }
+
+function kiraKredit(s) {
+  const lulus = getSubjekLulus(s);
+  return lulus.reduce((sum, k) => sum + (SUBJ_MAP[k]?.kredit || 3), 0);
+}
+
+function getCGPA(s, semView) {
+  if(s.belumDaftar) return null;
+  if(semView >= 2 && s.sem2.hpnm) return s.sem2.hpnm;
+  if(semView >= 1 && s.sem1.hpnm) return s.sem1.hpnm;
+  return null;
+}
+
+function cgpaColor(v) {
+  if(!v) return "#9ca3af";
+  if(v >= 3.50) return "#15803d";
+  if(v >= 3.00) return "#1d4ed8";
+  if(v >= 2.50) return "#d97706";
+  return "#b91c1c";
+}
+function cgpaClass(v) {
+  if(!v) return "";
+  if(v >= 3.50) return "gpa-high";
+  if(v >= 3.00) return "gpa-mid";
+  if(v >= 2.50) return "gpa-low";
+  return "gpa-fail";
+}
+
+function liStatus(s) {
+  const k = kiraKredit(s);
+  if(s.belumDaftar) return {ok:false, msg:"Tiada rekod"};
+  if(k >= KREDIT_MIN_LI) return {ok:true, msg:"Layak LI"};
+  return {ok:false, msg:`Kurang ${KREDIT_MIN_LI - k} kredit`};
+}
+
+// Cadangan Sem 4: subjek sem4 yang belum lulus + subjek gagal untuk ulang + ulang sem2 yg belum diselesaikan
+function cadanganSemDepan(s) {
+  const lulus = getSubjekLulus(s);
+  const gagal = getSubjekGagal(s);
+
+  // Subjek yang diulang di sem3 sudah ada dalam ulang array — cek sama ada masih gagal
+  const masihPerluUlang = gagal; // subjek gagal sem3
+
+  // Subjek sem4 yang belum lulus dan prasyarat OK
+  const sem4Baru = KURIKULUM.sem4.subjects.filter(sub => {
+    if(lulus.includes(sub.kod)) return false; // dah lulus
+    const prasyaratOK = sub.prasyarat.every(p => lulus.includes(p));
+    return prasyaratOK;
+  });
+
+  // Subjek sem3 yang belum diambil/lulus (kecuali DFK30023 yang bukan dalam kurikulum standard)
+  const sem3Pending = KURIKULUM.sem3.subjects.filter(sub => !lulus.includes(sub.kod) && !gagal.includes(sub.kod));
+
+  return {masihPerluUlang, sem4Baru, sem3Pending};
+}
+
+/* =============================================================
+   STATE
+   ============================================================= */
+let filteredStudents = [...STUDENTS];
+
+function filterStudents() {
+  const q = document.getElementById("searchInput").value.toLowerCase().trim();
+  filteredStudents = q
+    ? STUDENTS.filter(s => s.nama.toLowerCase().includes(q) || s.id.toLowerCase().includes(q))
+    : [...STUDENTS];
+  renderMain();
+}
+
+/* =============================================================
+   RENDER MAIN
+   ============================================================= */
+function renderMain() {
+  const semView = parseInt(document.getElementById("semFilter").value);
+  renderCards(semView);
+  renderAlerts(semView);
+  renderTable(semView);
+  document.getElementById("countLabel").textContent = `${filteredStudents.length} pelajar`;
+  document.getElementById("tableCount").textContent = `${filteredStudents.length} rekod`;
+}
+
+function renderCards(semView) {
+  const total = filteredStudents.length;
+  const gagalAny = filteredStudents.filter(s => getSubjekGagal(s).length > 0).length;
+  const liOk = filteredStudents.filter(s => liStatus(s).ok).length;
+  const cgpas = filteredStudents.map(s => getCGPA(s, semView)).filter(v => v!=null);
+  const avg = cgpas.length ? (cgpas.reduce((a,b)=>a+b,0)/cgpas.length).toFixed(2) : "—";
+  const belumDaftar = filteredStudents.filter(s => s.belumDaftar).length;
+  const topCGPA = filteredStudents.filter(s => { const c=getCGPA(s,semView); return c&&c>=3.5; }).length;
+
+  document.getElementById("summaryCards").innerHTML = `
+    <div class="stat-card blue">
+      <div class="stat-icon">👥</div>
+      <div class="stat-label">Jumlah Pelajar</div>
+      <div class="stat-val" style="color:#1d4ed8">${total}</div>
+      <div class="stat-sub">dalam kohort ini</div>
+    </div>
+    <div class="stat-card green">
+      <div class="stat-icon">📊</div>
+      <div class="stat-label">CGPA Purata</div>
+      <div class="stat-val" style="color:${cgpaColor(parseFloat(avg))}">${avg}</div>
+      <div class="stat-sub">Sem ${semView} terkini</div>
+    </div>
+    <div class="stat-card teal">
+      <div class="stat-icon">🏆</div>
+      <div class="stat-label">CGPA ≥ 3.50</div>
+      <div class="stat-val" style="color:#0d9488">${topCGPA}</div>
+      <div class="stat-sub">pelajar cemerlang</div>
+    </div>
+    <div class="stat-card orange">
+      <div class="stat-icon">⚠️</div>
+      <div class="stat-label">Ada Subjek Gagal</div>
+      <div class="stat-val" style="color:#ea580c">${gagalAny}</div>
+      <div class="stat-sub">perlu mengulang</div>
+    </div>
+    <div class="stat-card purple">
+      <div class="stat-icon">🏭</div>
+      <div class="stat-label">Layak LI</div>
+      <div class="stat-val" style="color:#7c3aed">${liOk}</div>
+      <div class="stat-sub">≥ ${KREDIT_MIN_LI} kredit lulus</div>
+    </div>
+    <div class="stat-card red">
+      <div class="stat-icon">❗</div>
+      <div class="stat-label">Tiada Rekod</div>
+      <div class="stat-val" style="color:#dc2626">${belumDaftar}</div>
+      <div class="stat-sub">belum daftar / berhenti</div>
+    </div>
+  `;
+}
+
+function renderAlerts(semView) {
+  let html = "";
+  const gagalList = filteredStudents.filter(s => getSubjekGagal(s).length > 0);
+  if(gagalList.length)
+    html += `<div class="alert warn"><span class="alert-icon">⚠️</span><span><strong>${gagalList.length} pelajar</strong> mempunyai subjek gagal pada Sem ${semView} dan perlu mengulang pada Semester 4.</span></div>`;
+  const belum = filteredStudents.filter(s => s.belumDaftar);
+  if(belum.length)
+    html += `<div class="alert danger"><span class="alert-icon">🚨</span><span><strong>${belum.length} pelajar</strong> tiada rekod akademik — ${belum.map(x=>x.nama.split(" ")[0]).join(", ")}. Sila semak status pelajar.</span></div>`;
+  const lowCGPA = filteredStudents.filter(s => { const c=getCGPA(s,semView); return c!=null&&c<2.5; });
+  if(lowCGPA.length)
+    html += `<div class="alert danger"><span class="alert-icon">🔴</span><span><strong>${lowCGPA.length} pelajar</strong> CGPA di bawah 2.50 — memerlukan bimbingan segera.</span></div>`;
+  const noData = filteredStudents.filter(s => !s.belumDaftar && !s.sem1.hpnm && s.sem1.lulus.length===0);
+  if(noData.length)
+    html += `<div class="alert info"><span class="alert-icon">ℹ️</span><span><strong>${noData.length} pelajar</strong> tiada rekod HPNM Sem 1–2 (mungkin ambil sebelah mana-mana).</span></div>`;
+  document.getElementById("alertsBox").innerHTML = html;
+}
+
+function renderTable(semView) {
+  let html = "";
+  filteredStudents.forEach((s, i) => {
+    const cgpa = getCGPA(s, semView);
+    const kredit = kiraKredit(s);
+    const gagal = getSubjekGagal(s);
+    const li = liStatus(s);
+    const isAtRisk = (cgpa!=null&&cgpa<2.5) || gagal.length>0 || s.belumDaftar;
+
+    const cgpaHtml = cgpa!=null
+      ? `<div class="cgpa-wrap"><span class="cgpa-num" style="color:${cgpaColor(cgpa)}">${cgpa.toFixed(2)}</span><div class="cgpa-bar-bg"><div class="cgpa-bar-fill" style="width:${Math.min(cgpa/4*100,100).toFixed(0)}%;background:${cgpaColor(cgpa)}"></div></div></div>`
+      : `<span style="color:#9ca3af;font-size:12px">—</span>`;
+
+    const kreditHtml = `<strong style="color:#0f2d57">${kredit}</strong><span style="color:#9ca3af;font-size:11px"> / ${TOTAL_KREDIT}</span>
+      <div style="height:5px;background:#e5e7eb;border-radius:3px;margin-top:4px;overflow:hidden"><div style="height:100%;width:${(kredit/TOTAL_KREDIT*100).toFixed(0)}%;background:#3b82f6;border-radius:3px"></div></div>`;
+
+    const gagalHtml = gagal.length
+      ? gagal.map(k=>`<span class="badge badge-gagal">✗ ${k}</span>`).join(" ")
+      : `<span style="color:#9ca3af;font-size:11px">—</span>`;
+
+    const liBadge = s.belumDaftar
+      ? `<span class="badge badge-tiada">?</span>`
+      : li.ok
+        ? `<span class="badge badge-li">✓ Layak</span>`
+        : `<span class="badge badge-pending">${li.msg}</span>`;
+
+    const jangka = s.belumDaftar ? "—" : gagal.length>0 ? "Sem 7 (mungkin)" : "Sem 6 (LI)";
+    const jangkaBadge = s.belumDaftar
+      ? `<span class="badge badge-tiada">—</span>`
+      : gagal.length>0
+        ? `<span class="badge badge-pending">+1 Sem</span>`
+        : `<span class="badge badge-tamat">Sem 6 LI</span>`;
+
+    html += `<tr class="${isAtRisk?'at-risk':''}">
+      <td style="color:#9ca3af;font-size:12px">${i+1}</td>
+      <td style="font-size:11px;color:#6b7280;font-family:monospace">${s.id}</td>
+      <td><strong style="color:#0f2d57">${s.nama}</strong>${s.belumDaftar?` <span class="badge badge-gagal" style="font-size:10px">TIADA REKOD</span>`:''}</td>
+      <td>${cgpaHtml}</td>
+      <td>${kreditHtml}</td>
+      <td>${gagalHtml}</td>
+      <td>${liBadge}</td>
+      <td>${jangkaBadge}</td>
+      <td><button onclick="showDetail('${s.id}')" style="padding:5px 12px;border:1px solid #3b82f6;color:#3b82f6;background:#eff6ff;border-radius:7px;cursor:pointer;font-size:11px;font-weight:700;transition:all .15s" onmouseover="this.style.background='#3b82f6';this.style.color='#fff'" onmouseout="this.style.background='#eff6ff';this.style.color='#3b82f6'">Detail →</button></td>
+    </tr>`;
+  });
+  document.getElementById("mainTbody").innerHTML = html || `<tr><td colspan="9" class="empty"><div class="empty-icon">🔍</div>Tiada pelajar dijumpai</td></tr>`;
+}
+
+/* =============================================================
+   DETAIL VIEW
+   ============================================================= */
+function showDetail(id) {
+  const s = STUDENTS.find(x => x.id === id);
+  if(!s) return;
+  document.getElementById("listView").classList.add("hidden");
+  document.getElementById("detailView").classList.remove("hidden");
+  window.scrollTo(0,0);
+
+  const lulus = getSubjekLulus(s);
+  const gagal = getSubjekGagal(s);
+  const ulang = s.sem3.ulang || [];
+  const kredit = kiraKredit(s);
+  const cgpa2 = s.sem2.hpnm;
+  const cgpa1 = s.sem1.hpnm;
+  const cgpaTerkini = cgpa2 || cgpa1 || null;
+  const li = liStatus(s);
+  const cad = cadanganSemDepan(s);
+
+  // Avatar initials
+  const initials = s.nama.split(" ").slice(0,2).map(w=>w[0]).join("");
+
+  // Sem track
+  const semTrack = `
+    <div class="sem-track">
+      <div class="sem-dot done">✓ Sem 1</div>
+      <div style="color:#d1d5db">→</div>
+      <div class="sem-dot done">✓ Sem 2</div>
+      <div style="color:#d1d5db">→</div>
+      <div class="sem-dot done">✓ Sem 3</div>
+      <div style="color:#d1d5db">→</div>
+      <div class="sem-dot current">▶ Sem 4 (Akan Datang)</div>
+      <div style="color:#d1d5db">→</div>
+      <div class="sem-dot upcoming">Sem 5</div>
+      <div style="color:#d1d5db">→</div>
+      <div class="sem-dot li-dot">🏭 Sem 6 (LI)</div>
+    </div>`;
+
+  // CGPA blocks
+  const gpaBlocks = [
+    {sem:"Sem 1", val:cgpa1},
+    {sem:"Sem 2", val:cgpa2},
+  ].map(g => {
+    if(!g.val) return `<div class="cgpa-block"><div class="cb-sem">${g.sem}</div><div class="cb-val" style="color:#9ca3af">—</div></div>`;
+    const pct = Math.min(g.val/4*100,100).toFixed(0);
+    return `<div class="cgpa-block ${cgpaClass(g.val)}">
+      <div class="cb-sem">${g.sem}</div>
+      <div class="cb-val">${g.val.toFixed(2)}</div>
+      <div class="cb-bar"><div class="cb-bar-fill" style="width:${pct}%;background:${cgpaColor(g.val)}"></div></div>
+    </div>`;
+  }).join("");
+
+  // Cadangan sem depan
+  const totalKreditCad = [...cad.masihPerluUlang,...cad.sem3Pending,...cad.sem4Baru].reduce((sum,item) => {
+    const k = typeof item === 'string' ? (SUBJ_MAP[item]?.kredit||3) : (item.kredit||3);
+    return sum + k;
+  }, 0);
+
+  const ulangRows = [...cad.masihPerluUlang, ...ulang.filter(k => !lulus.includes(k))].map(k => {
+    const sub = SUBJ_MAP[k] || {kod:k,nama:k,kredit:3,jenis:"?"};
+    return `<li class="subj-item ulang-item">
+      <span class="subj-kod">${sub.kod}</span>
+      <span class="subj-nama">${sub.nama} <span class="badge badge-ulang">🔄 Ulang</span></span>
+      <span class="subj-kredit">${sub.kredit} kr</span>
+    </li>`;
+  }).join("");
+
+  const sem3PendingRows = cad.sem3Pending.map(sub => `<li class="subj-item">
+    <span class="subj-kod">${sub.kod}</span>
+    <span class="subj-nama">${sub.nama} <span class="badge badge-${sub.jenis.toLowerCase()}">${sub.jenis}</span></span>
+    <span class="subj-kredit">${sub.kredit} kr</span>
+  </li>`).join("");
+
+  const sem4BahuRows = cad.sem4Baru.map(sub => `<li class="subj-item">
+    <span class="subj-kod">${sub.kod}</span>
+    <span class="subj-nama">${sub.nama} <span class="badge badge-${sub.jenis.toLowerCase()}">${sub.jenis}</span></span>
+    <span class="subj-kredit">${sub.kredit} kr</span>
+  </li>`).join("");
+
+  // Belum ambil keseluruhan
+  const semuaKod = Object.values(KURIKULUM).flatMap(s=>s.subjects.map(x=>x.kod));
+  const belumAmbil = semuaKod.filter(k => !lulus.includes(k) && !gagal.includes(k));
+  const belumRows = belumAmbil.map(k => {
+    const sub = SUBJ_MAP[k] || {kod:k,nama:k,kredit:3,jenis:"?",prasyarat:[]};
+    const semLabel = Object.entries(KURIKULUM).find(([,v])=>v.subjects.some(x=>x.kod===k))?.[0]?.replace("sem","Sem ")||"?";
+    const prasyaratOK = sub.prasyarat.every(p => lulus.includes(p));
+    return `<li class="subj-item" style="${!prasyaratOK?'opacity:.6':''}">
+      <span class="subj-kod">${sub.kod}</span>
+      <span class="subj-nama">${sub.nama} <span class="badge badge-${sub.jenis.toLowerCase()}">${sub.jenis}</span> ${!prasyaratOK?`<span class="badge badge-pending" style="font-size:10px">Prasyarat belum lulus</span>`:''}</span>
+      <span class="subj-kredit">${sub.kredit} kr</span>
+    </li>`;
+  }).join("");
+
+  document.getElementById("detailContent").innerHTML = `
+    <!-- HERO -->
+    <div class="profile-hero">
+      <div class="profile-hero-top">
+        <div class="avatar">${initials}</div>
+        <div>
+          <div class="profile-name">${s.nama}</div>
+          <div class="profile-id">${s.id} &nbsp;·&nbsp; Diploma Teknologi Maklumat</div>
+        </div>
+      </div>
+      <div class="profile-stats">
+        <div class="pstat">
+          <div class="pstat-val" style="color:${cgpaColor(cgpaTerkini)}">${cgpaTerkini?cgpaTerkini.toFixed(2):"—"}</div>
+          <div class="pstat-lbl">CGPA Terkini</div>
+        </div>
+        <div class="pstat">
+          <div class="pstat-val">${kredit}</div>
+          <div class="pstat-lbl">Kredit Lulus / ${TOTAL_KREDIT}</div>
+        </div>
+        <div class="pstat">
+          <div class="pstat-val">${lulus.length}</div>
+          <div class="pstat-lbl">Subjek Lulus</div>
+        </div>
+        <div class="pstat">
+          <div class="pstat-val" style="color:${li.ok?'#4ade80':'#fbbf24'}">${li.ok?'✓':'✗'}</div>
+          <div class="pstat-lbl">${li.msg}</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- KEMAJUAN SEM -->
+    <div class="section">
+      <div class="section-head"><div class="section-title">🗓️ Kemajuan Semester</div></div>
+      ${semTrack}
+      <div style="margin-top:16px;display:flex;gap:14px;flex-wrap:wrap">
+        <div style="font-size:13px;color:#374151"><strong>Jangka Tamat:</strong> ${gagal.length>0?'<span style="color:#ea580c">Mungkin Sem 7 (+1 semester akibat gagal)':'<span style="color:#15803d">Sem 6 — Latihan Industri'}</span></div>
+        <div style="font-size:13px;color:#374151"><strong>Kredit Baki:</strong> ${TOTAL_KREDIT - kredit} kredit lagi</div>
+      </div>
+      <div class="kredit-progress-wrap">
+        <div style="font-size:12px;color:#6b7280;margin-bottom:4px">Kemajuan Kredit: <strong>${kredit}</strong> / ${TOTAL_KREDIT} kredit (${(kredit/TOTAL_KREDIT*100).toFixed(0)}%)</div>
+        <div class="kredit-prog-bar"><div class="kredit-prog-fill" style="width:${(kredit/TOTAL_KREDIT*100).toFixed(0)}%"></div></div>
+      </div>
+    </div>
+
+    <!-- CGPA HISTORY -->
+    <div class="section">
+      <div class="section-head"><div class="section-title">📈 Rekod HPNM / CGPA</div></div>
+      <div class="cgpa-blocks">${gpaBlocks}</div>
+      ${ulang.length>0?`<div class="alert info" style="margin-top:12px"><span class="alert-icon">🔄</span><span>Pelajar ini mengulang subjek <strong>${ulang.join(", ")}</strong> pada Semester 3.</span></div>`:''}
+      ${(s.sem2.catatan)?`<div class="alert warn" style="margin-top:8px"><span class="alert-icon">⚠️</span><span>Nota Sem 2: ${s.sem2.catatan}</span></div>`:''}
+    </div>
+
+    <!-- GRID: CADANGAN + BELUM AMBIL -->
+    <div class="grid2">
+      <div class="section">
+        <div class="section-head">
+          <div class="section-title">📌 Cadangan Semester 4</div>
+          <span class="section-badge">${totalKreditCad} kredit dijangka</span>
+        </div>
+        ${ulangRows||sem3PendingRows||sem4BahuRows ? `
+          ${ulangRows ? `<div style="font-size:11px;font-weight:700;color:#c2410c;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">Subjek Ulang</div><ul class="subj-list" style="margin-bottom:12px">${ulangRows}</ul>` : ''}
+          ${sem3PendingRows ? `<div style="font-size:11px;font-weight:700;color:#374151;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">Subjek Sem 3 Belum Selesai</div><ul class="subj-list" style="margin-bottom:12px">${sem3PendingRows}</ul>` : ''}
+          ${sem4BahuRows ? `<div style="font-size:11px;font-weight:700;color:#374151;margin-bottom:6px;text-transform:uppercase;letter-spacing:.5px">Subjek Baru Sem 4</div><ul class="subj-list">${sem4BahuRows}</ul>` : ''}
+          <div class="subj-total"><span>Jumlah Kredit Dijangka Sem 4:</span><span>${totalKreditCad} kredit</span></div>
+        ` : `<div class="empty"><div class="empty-icon">✅</div>Semua subjek telah diselesaikan!</div>`}
+      </div>
+
+      <div class="section">
+        <div class="section-head">
+          <div class="section-title">📋 Subjek Belum Diambil</div>
+          <span class="section-badge">${belumAmbil.length} subjek</span>
+        </div>
+        <div style="max-height:380px;overflow-y:auto;padding-right:4px">
+          <ul class="subj-list">
+            ${belumRows || `<li class="subj-item" style="justify-content:center;color:#15803d">✅ Semua subjek telah diselesaikan!</li>`}
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- REKOD LULUS -->
+    <div class="section">
+      <div class="section-head">
+        <div class="section-title">✅ Rekod Subjek Lulus</div>
+        <span class="section-badge">${lulus.length} subjek · ${kredit} kredit</span>
+      </div>
+      <div class="tbl-wrap">
+        <table class="lulus-table">
+          <thead>
+            <tr><th>Kod Subjek</th><th>Nama Subjek</th><th>Semester</th><th>Jenis</th><th>Kredit</th><th>Status</th></tr>
+          </thead>
+          <tbody>${buildLulusTable(s)}</tbody>
+        </table>
+      </div>
+    </div>
+  `;
+}
+
+function buildLulusTable(s) {
+  const rows = [];
+
+  const addGroup = (list, semLabel, statusClass, statusText) => {
+    list.forEach(k => {
+      const sub = SUBJ_MAP[k] || {kod:k, nama:k, kredit:3, jenis:"?"};
+      const semName = Object.entries(KURIKULUM).find(([,v])=>v.subjects.some(x=>x.kod===k))?.[0]?.replace("sem","Sem ")||"?";
+      rows.push(`<tr>
+        <td><strong style="color:#0f2d57;font-family:monospace">${sub.kod}</strong></td>
+        <td>${sub.nama}</td>
+        <td style="font-size:12px;color:#6b7280">${semLabel||semName}</td>
+        <td><span class="badge badge-${(sub.jenis||'').toLowerCase()}">${sub.jenis||"?"}</span></td>
+        <td style="text-align:center;font-weight:700">${sub.kredit||3}</td>
+        <td><span class="badge ${statusClass}">${statusText}</span></td>
+      </tr>`);
+    });
+  };
+
+  addGroup(s.sem1.lulus||[], "Semester 1", "badge-lulus", "✓ Lulus");
+  addGroup(s.sem2.lulus||[], "Semester 2", "badge-lulus", "✓ Lulus");
+  addGroup(s.sem3.ulang||[], "Sem 3 (Ulang)", "badge-lulus", "✓ Lulus (Ulang)");
+  addGroup(s.sem3.lulus||[], "Semester 3", "badge-lulus", "✓ Lulus");
+  addGroup(s.sem3.gagal||[], "Semester 3", "badge-gagal", "✗ Gagal — Ulang");
+
+  return rows.join("") || `<tr><td colspan="6" class="empty">Tiada rekod</td></tr>`;
+}
+
+function showList() {
+  document.getElementById("listView").classList.remove("hidden");
+  document.getElementById("detailView").classList.add("hidden");
+  window.scrollTo(0,0);
+}
+
+/* =============================================================
+   CLOCK
+   ============================================================= */
+function updateClock() {
+  document.getElementById("clock").textContent = new Date().toLocaleString("ms-MY");
+}
+setInterval(updateClock, 1000);
+updateClock();
+
+// Initial render
+renderMain();
+</script>
+</body>
+</html>
